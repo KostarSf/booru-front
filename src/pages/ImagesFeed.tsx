@@ -9,14 +9,14 @@ import { useFetching } from "../hooks/useFetching";
 import { getPageCount } from "../utils/pages";
 import { useObserver } from '../hooks/useObservcer';
 import { Divider, LinearProgress } from '@mui/material';
-import SearchAppBar from '../components/Header';
+import NavBar from '../components/NavBar';
 
 type ImagesPage = {
   page: number;
   images: ImageDto[];
 }
 
-const Images = () => {
+const Images: React.FC = () => {
   const [imagePages, setImagePages] = useState<ImagesPage[]>([]);
   const [filter, setFilter] = useState({sort: 'score', query: 'safe, first_seen_at.gt:1 days ago'});
   const [searchFieldValue, setSearchFieldValue] = useState('first_seen_at.gt:1 days ago, safe');
@@ -52,11 +52,6 @@ const Images = () => {
 
   return (
     <>
-      <SearchAppBar
-        searchFieldValue={searchFieldValue}
-        onSearchFieldValueChange={e => setSearchFieldValue(e)}
-        onSearchSubmit={handleSearchSubmit}
-      />
       <Box sx={{mt: 1}}>
         {imagePages.map((ip, index, array) =>
           <div key={ip.page}>
