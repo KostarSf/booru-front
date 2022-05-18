@@ -1,16 +1,22 @@
-import React, { useRef } from 'react';
+import div, { useRef } from 'react';
 import Masonry from '@mui/lab/Masonry';
 import Box from '@mui/material/Box';
 import { useEffect, useState } from "react";
 import ImageService from "../API/ImageService";
-import { ImageDto } from "../API/Types";
+import { ImageDto, ImagesSearchDto } from "../API/Types";
 import ImageTile from '../components/ImageTile';
 import { useFetching } from "../hooks/useFetching";
 import { getPageCount } from "../utils/pages";
 import { useObserver } from '../hooks/useObservcer';
+import { Divider, LinearProgress } from '@mui/material';
+
+type ImagesPage = {
+  page: number;
+  images: ImageDto[];
+}
 
 const Images = () => {
-  const [images, setImages] = useState<ImageDto[]>([]);
+  const [imagePages, setImagePages] = useState<ImagesPage[]>([]);
   const [filter, setFilter] = useState({sort: 'score', query: 'safe, first_seen_at.gt:30 days ago'})
   const [totalPages, setTotalPages] = useState(0);
   const [limit, setLimit] = useState(40);
@@ -19,7 +25,7 @@ const Images = () => {
 
   const [fetchImages, isImagesLoading, imageError] = useFetching(async (limit: number, page: number) => {
     const response = await ImageService.getAll({per_page: limit, page, q: filter.query, sf: filter.sort});
-    setImages([...images, ...response.data.images])
+    setImagePages([...imagePages, { page, images: response.data.images }])
     const totalCount = response.data.total;
     setTotalPages(getPageCount(totalCount, limit));
   })
@@ -34,12 +40,25 @@ const Images = () => {
 
   return (
     <Box>
-      <Masonry columns={{xs: 2, sm: 2, md: 3, lg: 4, xl: 5}} spacing={1}>
-        {images.map((i) =>
-          <ImageTile image={i} key={i.id} />
-        )}
-      </Masonry>
-      <div ref={lastElement} style={{height: 20, background: 'red'}}/>
+      {imagePages.map((ip, index, array) =>
+        <div key={ip.page}>
+          {ip.page > 1 &&
+            <Divider sx={{my: 2}}>СТРАНИЦА {ip.page} ИЗ {totalPages}</Divider>
+          }
+          <Masonry columns={{xs: 2, sm: 2, md: 3, lg: 4, xl: 5}} spacing={1} key={ip.page}>
+            {ip.images.map((i) =>
+              <ImageTile image={i} key={i.id} />
+            )}
+          </Masonry>
+          { (ip.page === totalPages) &&
+            <Divider sx={{my: 2}}>КОНЕЦ ЛЕНТЫ</Divider>
+          }
+        </div>
+      )}
+      <div ref={lastElement}/>
+      {imagePages.length < totalPages &&
+        <LinearProgress />
+      }
     </Box>
   );
 }

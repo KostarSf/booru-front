@@ -1,4 +1,3 @@
-import { height } from "@mui/system";
 import { CSSProperties } from "react";
 import ProgressiveImage, { ProgressiveImageProps } from "react-progressive-image";
 import { ImageDto } from "../API/Types";
@@ -14,7 +13,7 @@ const ImageTile: React.FC<ImageProps> = ({image}) => {
 
   const createTileView = () => {
     const props: Readonly<ProgressiveImageProps> = {
-      src: image.representations.thumb,
+      src: image.representations.small,
       placeholder: image.representations.thumb_tiny,
       delay: isVideo ? 5000 : 3000,
     }
