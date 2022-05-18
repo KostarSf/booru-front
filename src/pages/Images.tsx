@@ -9,6 +9,7 @@ import { useFetching } from "../hooks/useFetching";
 import { getPageCount } from "../utils/pages";
 import { useObserver } from '../hooks/useObservcer';
 import { Divider, LinearProgress } from '@mui/material';
+import SearchAppBar from '../components/Header';
 
 type ImagesPage = {
   page: number;
@@ -17,7 +18,8 @@ type ImagesPage = {
 
 const Images = () => {
   const [imagePages, setImagePages] = useState<ImagesPage[]>([]);
-  const [filter, setFilter] = useState({sort: 'score', query: 'safe, first_seen_at.gt:30 days ago'})
+  const [filter, setFilter] = useState({sort: 'score', query: 'safe, first_seen_at.gt:1 days ago'});
+  const [searchFieldValue, setSearchFieldValue] = useState('first_seen_at.gt:1 days ago, safe');
   const [totalPages, setTotalPages] = useState(0);
   const [limit, setLimit] = useState(40);
   const [page, setPage] = useState(1);
@@ -31,35 +33,55 @@ const Images = () => {
   })
 
   useObserver(lastElement, page < totalPages, isImagesLoading, () => {
-    setPage(page + 1);
+    setPage(page => page + 1);
   })
 
   useEffect(() => {
     fetchImages(limit, page);
   }, [page, limit])
 
+  useEffect(() => {
+    setImagePages([])
+    setTotalPages(0)
+    setPage(1)
+  }, [filter])
+
+  const handleSearchSubmit = () => {
+    setFilter({...filter, query: searchFieldValue});
+  }
+
   return (
-    <Box>
-      {imagePages.map((ip, index, array) =>
-        <div key={ip.page}>
-          {ip.page > 1 &&
-            <Divider sx={{my: 2}}>СТРАНИЦА {ip.page} ИЗ {totalPages}</Divider>
-          }
-          <Masonry columns={{xs: 2, sm: 2, md: 3, lg: 4, xl: 5}} spacing={1} key={ip.page}>
-            {ip.images.map((i) =>
-              <ImageTile image={i} key={i.id} />
-            )}
-          </Masonry>
-          { (ip.page === totalPages) &&
-            <Divider sx={{my: 2}}>КОНЕЦ ЛЕНТЫ</Divider>
-          }
-        </div>
-      )}
-      <div ref={lastElement}/>
-      {imagePages.length < totalPages &&
-        <LinearProgress />
-      }
-    </Box>
+    <>
+      <SearchAppBar
+        searchFieldValue={searchFieldValue}
+        onSearchFieldValueChange={e => setSearchFieldValue(e)}
+        onSearchSubmit={handleSearchSubmit}
+      />
+      <Box sx={{mt: 1}}>
+        {imagePages.map((ip, index, array) =>
+          <div key={ip.page}>
+            {ip.page > 1 &&
+              <Divider sx={{my: 2}}>СТРАНИЦА {ip.page} ИЗ {totalPages}</Divider>
+            }
+            <Masonry columns={{xs: 2, sm: 2, md: 3, lg: 4, xl: 5}} spacing={1} key={ip.page}>
+              {ip.images.map((i) =>
+                <ImageTile image={i} key={i.id} />
+              )}
+            </Masonry>
+            { (ip.page === totalPages) &&
+              <Divider sx={{my: 2}}>КОНЕЦ ЛЕНТЫ</Divider>
+            }
+          </div>
+        )}
+        <div ref={lastElement}/>
+        { (imagePages.length >= 1 && imagePages.length < totalPages) && (
+          <>
+            <Box sx={{height: '100px'}}></Box>
+            <LinearProgress />
+          </>
+        )}
+      </Box>
+    </>
   );
 }
 

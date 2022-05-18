@@ -36,7 +36,7 @@ const ImageTile: React.FC<ImageProps> = ({image}) => {
   }
 
   return (
-    <div>
+    <div onClick={() => console.log(image)}>
       {createTileView()}
     </div>
   );
