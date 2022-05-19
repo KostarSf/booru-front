@@ -28,6 +28,12 @@ export type ImageDto = {
   animated: boolean;
   /** The MIME type of this image. One of "image/gif", "image/jpeg", "image/png", "image/svg+xml", "video/webm". */
   mime_type: string;
+  faves: number;
+  score: number;
+  upvotes: number;
+  downvotes: number;
+  wilson_score: number;
+  comment_count: number;
 };
 
 export type ImageFormat = "gif" | "jpg" | "jpeg" | "png" | "svg" | "webm"

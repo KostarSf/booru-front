@@ -17,7 +17,7 @@ type ImagesPage = {
 
 const Images: React.FC = () => {
   const [imagePages, setImagePages] = useState<ImagesPage[]>([]);
-  const [filter, setFilter] = useState({sort: 'score', query: 'safe, first_seen_at.gt:120 days ago, animated'});
+  const [filter, setFilter] = useState({sort: 'wilson_score', query: 'safe, fluttershy'});
   const [searchFieldValue, setSearchFieldValue] = useState('first_seen_at.gt:1 days ago, safe');
   const [totalPages, setTotalPages] = useState(0);
   const [limit, setLimit] = useState(50);
@@ -51,26 +51,34 @@ const Images: React.FC = () => {
 
   return (
     <>
-      <Box sx={{mt: 1}}>
-        {imagePages.map((ip, index, array) =>
+      <Box sx={{ mt: 1 }}>
+        {imagePages.map((ip, index, array) => (
           <div key={ip.page}>
-            {ip.page > 1 &&
-              <Divider sx={{my: 2}}>СТРАНИЦА {ip.page} ИЗ {totalPages}</Divider>
-            }
-            <Masonry columns={{xs: 2, sm: 2, md: 3, lg: 4, xl: 5}} spacing={1} key={ip.page}>
-              {ip.images.map((i) =>
+            {ip.page > 1 && (
+              <Divider sx={{ my: 2 }}>
+                {ip.page} / {totalPages}
+              </Divider>
+            )}
+            <Masonry
+              columns={{ xs: 2, sm: 2, md: 3, lg: 4, xl: 5 }}
+              spacing={1}
+              key={ip.page}
+            >
+              {ip.images.map((i) => (
                 <ImageTile image={i} key={i.id} />
-              )}
+              ))}
             </Masonry>
-            { (ip.page === totalPages) &&
-              <Divider sx={{my: 2}}>КОНЕЦ ЛЕНТЫ</Divider>
-            }
+            {ip.page === totalPages && (
+              <Divider sx={{ my: 2 }}>
+                {ip.page} / {totalPages}
+              </Divider>
+            )}
           </div>
-        )}
-        <div ref={lastElement}/>
-        { (imagePages.length >= 1 && imagePages.length < totalPages) && (
+        ))}
+        <div ref={lastElement} />
+        {imagePages.length >= 1 && imagePages.length < totalPages && (
           <>
-            <Box sx={{height: '100px'}}></Box>
+            <Box sx={{ height: "100px" }}></Box>
             <LinearProgress />
           </>
         )}
