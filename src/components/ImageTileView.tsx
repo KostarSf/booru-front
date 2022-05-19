@@ -53,7 +53,7 @@ function ImageTileView({
           width: "100%",
           borderRadius: "5px",
           filter: sourceLoaded ? "blur(0)" : "blur(5px)",
-          transition: "filter 0.3s ease",
+          // transition: "filter 0.3s ease",
         }}
       />
       {!sourceLoaded && (

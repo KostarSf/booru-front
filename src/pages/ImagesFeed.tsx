@@ -51,7 +51,7 @@ const Images: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ mt: 1 }}>
+      <Box sx={{ mt: 1, ml: 1 }}>
         {imagePages.map((ip, index, array) => (
           <div key={ip.page}>
             {ip.page > 1 && (
@@ -60,7 +60,7 @@ const Images: React.FC = () => {
               </Divider>
             )}
             <Masonry
-              columns={{ xs: 2, sm: 2, md: 3, lg: 4, xl: 5 }}
+              columns={{ xs: 1, sm: 2, md: 3, lg: 4, xl: 5 }}
               spacing={1}
               key={ip.page}
             >
