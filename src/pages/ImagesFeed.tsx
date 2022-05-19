@@ -1,15 +1,14 @@
-import div, { useRef } from 'react';
+import React, { useRef } from 'react';
 import Masonry from '@mui/lab/Masonry';
 import Box from '@mui/material/Box';
 import { useEffect, useState } from "react";
 import ImageService from "../API/ImageService";
-import { ImageDto, ImagesSearchDto } from "../API/Types";
+import { ImageDto } from "../API/Types";
 import ImageTile from '../components/ImageTile';
 import { useFetching } from "../hooks/useFetching";
 import { getPageCount } from "../utils/pages";
 import { useObserver } from '../hooks/useObservcer';
 import { Divider, LinearProgress } from '@mui/material';
-import NavBar from '../components/NavBar';
 
 type ImagesPage = {
   page: number;
@@ -18,10 +17,10 @@ type ImagesPage = {
 
 const Images: React.FC = () => {
   const [imagePages, setImagePages] = useState<ImagesPage[]>([]);
-  const [filter, setFilter] = useState({sort: 'score', query: 'safe, first_seen_at.gt:1 days ago'});
+  const [filter, setFilter] = useState({sort: 'score', query: 'safe, first_seen_at.gt:120 days ago, animated'});
   const [searchFieldValue, setSearchFieldValue] = useState('first_seen_at.gt:1 days ago, safe');
   const [totalPages, setTotalPages] = useState(0);
-  const [limit, setLimit] = useState(40);
+  const [limit, setLimit] = useState(50);
   const [page, setPage] = useState(1);
   const lastElement = useRef(null);
 
