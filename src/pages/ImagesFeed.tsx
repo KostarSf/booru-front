@@ -52,8 +52,9 @@ const Images: React.FC = () => {
 
   return (
     <>
+      <Box sx={{ py: { xs: 0.5, md: 1 } }}></Box>
       <SearchBar />
-      <Box sx={{ ml: 1 }} minHeight={1200}>
+      <Box sx={{ ml: 1, mt: { xs: 1, md: 2 } }} minHeight={1200}>
         {imagePages.map((ip, index, array) => (
           <div key={ip.page}>
             {ip.page > 1 && (
