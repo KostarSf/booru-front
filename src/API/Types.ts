@@ -48,3 +48,22 @@ export type ImageRepresentations = {
   thumb_small: string,
   thumb_tiny: string,
 }
+
+export type SortItem = {value: string, title: string};
+
+export const SortTypes: SortItem[] = [
+  { value: "first_seen_at", title: "initial post date" },
+  { value: "score", title: "score" },
+  { value: "wilson_score", title: "Wilson score" },
+  { value: "_score", title: "relevance" },
+  { value: "id", title: "image ID" },
+  {
+    value: "updated_at",
+    title: "last modification date",
+  },
+];
+
+export const OrderTypes: SortItem[] = [
+  { value: "desc", title: "descending" },
+  { value: "asc", title: "ascending" },
+];

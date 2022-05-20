@@ -11,55 +11,17 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("md")]: {
-    marginLeft: theme.spacing(1),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  width: "100%",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-      "&:focus": {
-        width: "60ch",
-      },
-    },
-  },
-}));
-
 const NavBar: React.FC = () => {
   const navigate = useNavigate();
 
   return (
     <React.Fragment>
-      <AppBar position="sticky">
+      <AppBar
+        position="static"
+        sx={{
+          display: { xs: "none", md: "flex" },
+        }}
+      >
         <Toolbar>
           <IconButton
             size="large"
@@ -76,16 +38,16 @@ const NavBar: React.FC = () => {
             component="div"
             onClick={() => navigate("/")}
             sx={{
-              cursor: 'pointer',
+              cursor: "pointer",
               mr: 2,
-              display: { xs: "none", md: "block" },
+              display: "block",
               color: "inherit",
               textDecoration: "none",
             }}
           >
             BOORU VIEW
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box sx={{ flexGrow: 1, display: "flex" }}>
             <Button
               sx={{
                 my: 2,
@@ -97,15 +59,6 @@ const NavBar: React.FC = () => {
               Лента
             </Button>
           </Box>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-            />
-          </Search>
         </Toolbar>
       </AppBar>
     </React.Fragment>

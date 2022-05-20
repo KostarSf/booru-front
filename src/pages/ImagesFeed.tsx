@@ -9,6 +9,7 @@ import { useFetching } from "../hooks/useFetching";
 import { getPageCount } from "../utils/pages";
 import { useObserver } from '../hooks/useObservcer';
 import { Divider, LinearProgress } from '@mui/material';
+import SearchBar from '../components/SearchBar';
 
 type ImagesPage = {
   page: number;
@@ -36,7 +37,7 @@ const Images: React.FC = () => {
   })
 
   useEffect(() => {
-    fetchImages(limit, page);
+    // fetchImages(limit, page);
   }, [page, limit])
 
   useEffect(() => {
@@ -51,7 +52,8 @@ const Images: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ mt: 1, ml: 1 }}>
+      <SearchBar />
+      <Box sx={{ mt: 1, ml: 1 }} minHeight={1200}>
         {imagePages.map((ip, index, array) => (
           <div key={ip.page}>
             {ip.page > 1 && (
