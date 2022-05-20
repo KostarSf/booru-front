@@ -10,12 +10,14 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
-import { SortTypes, OrderTypes } from "../API/Types";
+import { SortTypes, OrderTypes, getSortTypeIndex, getOrderTypeIndex } from "../API/Types";
 import ChooseMenu from "./ChooseMenu";
 import Menu from "@mui/material/Menu";
 import HideOnScroll from "./HideOnScroll";
 import ElevationScroll from "./ElevationScroll";
 import { Box } from "@mui/material";
+import { useSearchParams } from "react-router-dom";
+import { createSearchParams, getSearchParams } from "../API/Search";
 
 type Props = {};
 
@@ -38,36 +40,20 @@ const Search = styled("div")(({ theme }) => ({
   },
   marginLeft: 0,
   width: "100%",
-  [theme.breakpoints.up("md")]: {
-    marginLeft: theme.spacing(1),
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   width: "100%",
-  paddingRight: theme.spacing(0.7),
+  paddingRight: theme.spacing(1),
   "& .MuiInputBase-input": {
     padding: theme.spacing(0.5, 1),
-    // vertical padding + font size from searchIcon
-    marginLeft: `calc(1em + ${theme.spacing(4)})`,
     width: "100%",
-    // backgroundColor: "#eee",
-    // borderRadius: theme.shape.borderRadius
   },
 }));
 
 const SearchBar = (props: Props) => {
+  const [searchValue, setSearchValue] = React.useState('');
   const [selectedSortIndex, setSelectedSortIndex] = React.useState(0);
   const [selectedOrderIndex, setSelectedOrderIndex] = React.useState(0);
 
@@ -83,6 +69,31 @@ const SearchBar = (props: Props) => {
 
   const theme = useTheme();
   const isMobileScreen = useMediaQuery(theme.breakpoints.down("md"));
+
+  let [searchParams, setSearchParams] = useSearchParams();
+
+  React.useEffect(() => {
+    const params = getSearchParams(searchParams);
+    if (params.q) {
+      setSearchValue(params.q === "(safe || !safe)" ? "" : params.q);
+    };
+    if (params.sf) {
+      setSelectedSortIndex(getSortTypeIndex(params.sf));
+    }
+    if (params.sd) {
+      setSelectedOrderIndex(getOrderTypeIndex(params.sd));
+    }
+  }, [searchParams]);
+
+  const handleSearch = () => {
+    setSearchParams(
+      createSearchParams(
+        searchValue,
+        SortTypes[selectedSortIndex].value,
+        OrderTypes[selectedOrderIndex].value
+      )
+    );
+  }
 
   React.useEffect(() => {
     if (!isMobileScreen) {
@@ -131,13 +142,15 @@ const SearchBar = (props: Props) => {
             >
               <Stack direction="row" spacing={1} flexGrow={1} height="100%">
                 <Item sx={{ flexGrow: 1 }} elevation={0}>
+                  <IconButton onClick={handleSearch}>
+                    <SearchIcon />
+                  </IconButton>
                   <Search>
-                    <SearchIconWrapper>
-                      <SearchIcon />
-                    </SearchIconWrapper>
                     <StyledInputBase
                       placeholder="Search…"
                       inputProps={{ "aria-label": "search" }}
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
                     />
                   </Search>
                 </Item>

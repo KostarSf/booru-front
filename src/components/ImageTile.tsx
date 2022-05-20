@@ -16,6 +16,8 @@ const ImageTile: React.FC<ImageProps> = ({image}) => {
   const [canShowTileView, setCanShowTileView] = useState(false);
   const [hqThumbLoaded, setHqThumbLoaded] = useState(false);
 
+  const [spoilered, setSpoilered] = useState(image.spoilered);
+
   const handleResizeTiles = () => {
     const height =
       (divRef.current ? divRef.current.offsetWidth : 0) / image.aspect_ratio;
@@ -60,6 +62,8 @@ const ImageTile: React.FC<ImageProps> = ({image}) => {
           onLoad={handleOnLoad}
           visible={isVisible}
           onSourceLoad={() => setHqThumbLoaded(true)}
+          unloadBlur={!spoilered}
+          loadSource={!spoilered}
         />
       )}
       {image.format === "webm" && (
@@ -78,40 +82,31 @@ const ImageTile: React.FC<ImageProps> = ({image}) => {
         />
       )}
     </div>
-  )
+  );
 
   return (
-    <Paper elevation={0}>
+    <Paper elevation={0} sx={{ position: "relative" }}>
       {viewCard}
-      {/* <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography
-          variant="button"
-          color="warning.light"
-          mx={1}
-          noWrap
+      {spoilered && (
+        <Box
+          onClick={() => setSpoilered(false)}
+          sx={{
+            position: "absolute",
+            inset: 0,
+            backgroundColor: "#fffa",
+            backdropFilter: "blur(35px)",
+            borderRadius: "5px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            userSelect: "none",
+          }}
         >
-          <StarRoundedIcon sx={{ fontSize: 16 }} />
-          {image.faves}
-        </Typography>
-        <Typography
-          variant="button"
-          mx={1}
-          noWrap
-        >
-          <ThumbUpRoundedIcon sx={{ fontSize: 16, color: green[500] }} />
-          {image.score}
-          <ThumbDownRoundedIcon sx={{ fontSize: 16, color: pink[500] }} />
-        </Typography>
-        <Typography
-          variant="button"
-          color="secondary.light"
-          mx={1}
-          noWrap
-        >
-          <ForumRoundedIcon sx={{ fontSize: 16 }} />
-          {image.comment_count}
-        </Typography>
-      </Box> */}
+          <Typography variant="overline" fontSize={26} component="div">
+            HIDDEN
+          </Typography>
+        </Box>
+      )}
     </Paper>
   );
 }

@@ -9,6 +9,8 @@ type Props = {
   visible: boolean;
   onLoad: React.ReactEventHandler<HTMLImageElement>;
   onSourceLoad: () => void;
+  unloadBlur?: boolean;
+  loadSource?: boolean;
 };
 
 function ImageTileView({
@@ -18,6 +20,8 @@ function ImageTileView({
   onSourceLoad,
   visible,
   alt,
+  unloadBlur = true,
+  loadSource = true,
 }: Props) {
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -26,11 +30,12 @@ function ImageTileView({
     !sourceLoaded && checkImage(placeholder);
     !visible && setSourceLoaded(false);
     visible &&
+      loadSource &&
       checkImage(source).then(() => {
         setSourceLoaded(true);
         onSourceLoad();
       });
-  }, [visible]);
+  }, [visible, loadSource]);
 
   return visible ? (
     <div
@@ -52,11 +57,11 @@ function ImageTileView({
           display: "block",
           width: "100%",
           borderRadius: "5px",
-          filter: sourceLoaded ? "blur(0)" : "blur(5px)",
+          filter: (!sourceLoaded && unloadBlur) ? "blur(5px)" : "blur(0)",
           // transition: "filter 0.3s ease",
         }}
       />
-      {!sourceLoaded && (
+      {(!sourceLoaded && loadSource) && (
         <Skeleton
           variant="rectangular"
           width="100%"

@@ -34,6 +34,8 @@ export type ImageDto = {
   downvotes: number;
   wilson_score: number;
   comment_count: number;
+  hidden_from_users: boolean;
+  spoilered: boolean;
 };
 
 export type ImageFormat = "gif" | "jpg" | "jpeg" | "png" | "svg" | "webm"
@@ -63,7 +65,17 @@ export const SortTypes: SortItem[] = [
   },
 ];
 
+export function getSortTypeIndex(value: string) {
+  return SortTypes.indexOf(SortTypes.find((i) => i.value === value) || SortTypes[0]);
+}
+
 export const OrderTypes: SortItem[] = [
   { value: "desc", title: "descending" },
   { value: "asc", title: "ascending" },
 ];
+
+export function getOrderTypeIndex(value: string) {
+  return OrderTypes.indexOf(
+    OrderTypes.find((i) => i.value === value) || OrderTypes[0]
+  );
+}
