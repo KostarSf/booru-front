@@ -4,7 +4,7 @@ export const useObserver = (
   ref: React.MutableRefObject<any>,
   canLoad: boolean,
   isLoading: boolean,
-  callback: Function
+  callback: Function,
 ) => {
   const observer = useRef<IntersectionObserver | null>(null);
 

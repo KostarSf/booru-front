@@ -7,11 +7,8 @@ import ImagesFeed from "../components/ImagesFeed";
 
 const ImagesFeedPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchData, setSearchData] = React.useState<SearchData>(
-    getSearchParams(searchParams)
-  );
 
-  const handleOnSearch = () => {
+  const handleOnSearch = (searchData: SearchData) => {
     window.scroll(0, 0)
     setSearchParams(createSearchParams(searchData));
   };
@@ -19,8 +16,7 @@ const ImagesFeedPage = () => {
   return (
     <Box sx={{ pt: { xs: 1, md: 2 } }}>
       <SearchBar
-        value={searchData}
-        onChange={setSearchData}
+        initialValue={getSearchParams(searchParams)}
         onSubmit={handleOnSearch}
       />
       <ImagesFeed

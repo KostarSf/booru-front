@@ -1,7 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
+import Typograpy from "@mui/material/Typography";
 import { SxProps, Theme } from "@mui/material/styles";
-import { useObserver } from "../hooks/useObservcer";
 import { ImagesQuery } from "../API/Search";
 import { useFetching } from "../hooks/useFetching";
 import ImageService from "../API/ImageService";
@@ -10,6 +10,9 @@ import TileImagesPage from "./UI/TileImagesPage";
 import { ImageDto } from "../API/Types";
 import ImageTile from "./ImageTile";
 import PageLoader from "./UI/PageLoader";
+import PageDivider from "./UI/PageDivider";
+import Divider from "@mui/material/Divider";
+import BottomLoader from "./UI/BottomLoader";
 
 type SearchParams = {
   q: string;
@@ -25,14 +28,13 @@ type Props = {
 const ImagesFeed = (props: Props) => {
   const { sx, searchParams: urlSearchParams } = props;
 
+  const [pageLimit, setPageLimit] = React.useState(50);
   const [imagesQuery, setImagesQuery] = React.useState<ImagesQuery | null>(
     null
   );
 
   const [fetchImagePage, isImagePageLoading] = useFetching(
     async (page: number, searchParams: SearchParams) => {
-      const pageLimit = 50;
-
       const getResponse = async (page: number) => {
         return await ImageService.getAll({
           per_page: pageLimit,
@@ -59,6 +61,7 @@ const ImagesFeed = (props: Props) => {
             },
           ],
           lastLoadedPage: 1,
+          totalCount: totalCount,
           totalPages: getPageCount(totalCount, pageLimit),
           queryString: queryString,
         });
@@ -66,10 +69,16 @@ const ImagesFeed = (props: Props) => {
       }
 
       if (page !== imagesQuery.lastLoadedPage + 1) {
+        console.log(
+          `Fetching: Wrong order (${page} instead of ${
+            imagesQuery.lastLoadedPage + 1
+          }). Abort`
+        );
         return;
       }
 
-      if (page >= imagesQuery.totalPages) {
+      if (page > imagesQuery.totalPages) {
+        console.log("Fetching: All pages is loaded. Nothig done");
         return;
       }
 
@@ -97,42 +106,56 @@ const ImagesFeed = (props: Props) => {
     return newSearchParams;
   }, [urlSearchParams]);
 
-  const loadTriggerRef = React.useRef(null);
+  const handlePageOnSceen = (page: number) => {
+    if (imagesQuery === null) return;
 
-  useObserver(
-    loadTriggerRef,
-    notLastPage(imagesQuery),
-    isImagePageLoading,
-    () => {
-      const fetchingPage = getNextUnloadedPage(imagesQuery);
-      console.log(`Observer: Fetch image page ${fetchingPage}...`);
-      fetchImagePage(fetchingPage, searchParams);
+    console.log(
+      `Page on screen: ${page}\n` +
+        `Last lodaded page: ${imagesQuery.lastLoadedPage}\n` +
+        `Pages total: ${imagesQuery.totalPages}`
+    );
+
+    const lastLoadedPage = page === imagesQuery.lastLoadedPage;
+    const lastPageOfQuery = page >= imagesQuery.totalPages;
+
+    if (lastPageOfQuery) {
+      console.log(`This is the last page of query`);
+      return;
     }
-  );
+
+    if (lastLoadedPage) {
+      console.log(`Last loaded page on screen. Load next...`);
+      fetchImagePage(page + 1, searchParams);
+    }
+  }
 
   return (
     // Вставить bottomloader в TileImagesPage
-    // Передавать <div ref={loadTriggerRef} /> в TileImagesPage
-    // чтоб он ставил его перед последней страницей в списке
     <React.Fragment>
       <Box sx={sx}>
-        {imagesQuery ? (
-          imagesQuery.pages.map(page => (
-            <TileImagesPage
-              key={page.page}
-              total={imagesQuery.totalPages}
-              page={page.page}
-            >
-              {page.images.map(image =>
-                <ImageTile image={image} key={image.id} />
-              )}
-            </TileImagesPage>
-          ))
-        ) : (
-          isImagePageLoading &&
-          <PageLoader />
+        {imagesQuery && (
+          <Divider textAlign="left" sx={{ mb: 2 }}>
+            <Typograpy variant="overline" fontWeight={500}>
+              Found {imagesQuery.totalCount} results on {imagesQuery.totalPages}{" "}
+              pages
+            </Typograpy>
+          </Divider>
         )}
-        <div ref={loadTriggerRef} />
+        {imagesQuery
+          ? imagesQuery.pages.map((page) => (
+              <TileImagesPage
+                key={`${page.page}-${imagesQuery.queryString}`}
+                total={imagesQuery.totalPages}
+                page={page.page}
+                onScreen={handlePageOnSceen}
+              >
+                {page.images.map((image) => (
+                  <ImageTile image={image} key={image.id} />
+                ))}
+              </TileImagesPage>
+            ))
+          : isImagePageLoading && <PageLoader />}
+        {imagesQuery && notLastPage(imagesQuery) && <BottomLoader />}
       </Box>
     </React.Fragment>
   );
@@ -145,7 +168,7 @@ function createNewSearchParams(urlSearchParams: URLSearchParams) {
     order: urlSearchParams.get("sd") || "",
   };
   const newSearchParams: SearchParams = {
-    q: params.query.length ? params.query : "first_seen_at.gt:5 days ago",
+    q: params.query.length ? params.query : "first_seen_at.gt:3 days ago",
     sf: params.sort.length ? params.sort : "first_seen_at",
     sd: params.order.length ? params.order : "desc",
   };

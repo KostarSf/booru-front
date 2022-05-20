@@ -38,5 +38,6 @@ export type ImagesQuery = {
   pages: ImagesPage[];
   queryString: string;
   lastLoadedPage: number;
+  totalCount: number;
   totalPages: number;
 };

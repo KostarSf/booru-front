@@ -51,13 +51,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 type Props = {
-  value: SearchData;
-  onChange: (value: SearchData) => void;
-  onSubmit: () => void;
+  initialValue: SearchData;
+  onSubmit: (value: SearchData) => void;
 };
 
 const SearchBar = (props: Props) => {
-  const {value, onChange, onSubmit} = props;
+  const { initialValue, onSubmit } = props;
+
+  const [value, setValue] = React.useState(initialValue);
 
   const selectedSortIndex = getSortTypeIndex(value.sort);
   const selectedOrderIndex = getOrderTypeIndex(value.order);
@@ -76,7 +77,7 @@ const SearchBar = (props: Props) => {
   const isMobileScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleSearch = () => {
-    onSubmit();
+    onSubmit(value);
   }
 
   React.useEffect(() => {
@@ -94,10 +95,10 @@ const SearchBar = (props: Props) => {
           value={SortTypes}
           selectedIndex={selectedSortIndex}
           onSelect={(item) =>
-            onChange({
+            setValue(value => ({
               ...value,
               sort: item.value,
-            })
+            }))
           }
         />
       </Item>
@@ -108,10 +109,10 @@ const SearchBar = (props: Props) => {
           value={OrderTypes}
           selectedIndex={selectedOrderIndex}
           onSelect={(item) =>
-            onChange({
+            setValue(value => ({
               ...value,
               order: item.value,
-            })
+            }))
           }
         />
       </Item>
@@ -145,10 +146,10 @@ const SearchBar = (props: Props) => {
                       placeholder="Search…"
                       inputProps={{ "aria-label": "search" }}
                       value={value.query}
-                      onChange={(e) => onChange({
+                      onChange={(e) => setValue(value => ({
                         ...value,
                         query: e.target.value
-                      })}
+                      }))}
                       onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                     />
                   </Search>
