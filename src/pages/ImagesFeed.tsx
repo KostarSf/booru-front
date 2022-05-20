@@ -18,7 +18,7 @@ type ImagesPage = {
 
 const Images: React.FC = () => {
   const [imagePages, setImagePages] = useState<ImagesPage[]>([]);
-  const [filter, setFilter] = useState({sort: 'wilson_score', query: 'safe, fluttershy'});
+  const [filter, setFilter] = useState({sort: 'wilson_score', query: 'safe'});
   const [searchFieldValue, setSearchFieldValue] = useState('first_seen_at.gt:1 days ago, safe');
   const [totalPages, setTotalPages] = useState(0);
   const [limit, setLimit] = useState(50);
@@ -37,7 +37,7 @@ const Images: React.FC = () => {
   })
 
   useEffect(() => {
-    // fetchImages(limit, page);
+    fetchImages(limit, page);
   }, [page, limit])
 
   useEffect(() => {
@@ -53,11 +53,11 @@ const Images: React.FC = () => {
   return (
     <>
       <SearchBar />
-      <Box sx={{ mt: 1, ml: 1 }} minHeight={1200}>
+      <Box sx={{ ml: 1 }} minHeight={1200}>
         {imagePages.map((ip, index, array) => (
           <div key={ip.page}>
             {ip.page > 1 && (
-              <Divider sx={{ my: 2 }}>
+              <Divider sx={{ my: 2, color: "#bbb" }}>
                 {ip.page} / {totalPages}
               </Divider>
             )}
@@ -71,7 +71,7 @@ const Images: React.FC = () => {
               ))}
             </Masonry>
             {ip.page === totalPages && (
-              <Divider sx={{ my: 2 }}>
+              <Divider sx={{ my: 2, color: "#bbb" }}>
                 {ip.page} / {totalPages}
               </Divider>
             )}

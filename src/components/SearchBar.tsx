@@ -15,6 +15,7 @@ import ChooseMenu from "./ChooseMenu";
 import Menu from "@mui/material/Menu";
 import HideOnScroll from "./HideOnScroll";
 import ElevationScroll from "./ElevationScroll";
+import { Box } from "@mui/material";
 
 type Props = {};
 
@@ -55,12 +56,14 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   width: "100%",
-  paddingRight: theme.spacing(1),
+  paddingRight: theme.spacing(0.7),
   "& .MuiInputBase-input": {
-    padding: { xs: theme.spacing(1, 1, 1, 0), sm: theme.spacing(0, 1, 0, 0) },
+    padding: theme.spacing(0.5, 1),
     // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    marginLeft: `calc(1em + ${theme.spacing(4)})`,
     width: "100%",
+    // backgroundColor: "#eee",
+    // borderRadius: theme.shape.borderRadius
   },
 }));
 
@@ -89,7 +92,7 @@ const SearchBar = (props: Props) => {
 
   const filterSwitchers = (
     <Stack spacing={1} direction={{ xs: "column", sm: "row" }}>
-      <Item>
+      <Item elevation={isMobileScreen ? 2 : 0}>
         <ChooseMenu
           icon={<FilterAltOutlinedIcon />}
           menuId="sort-filter"
@@ -98,7 +101,7 @@ const SearchBar = (props: Props) => {
           onSelect={(item, index) => setSelectedSortIndex(index)}
         />
       </Item>
-      <Item>
+      <Item elevation={isMobileScreen ? 2 : 0}>
         <ChooseMenu
           icon={<FilterListOutlinedIcon />}
           menuId="order-filter"
@@ -112,80 +115,89 @@ const SearchBar = (props: Props) => {
 
   return (
     <HideOnScroll canHide={isMobileScreen}>
-      <Stack
-        direction={{ xs: "column", md: "row" }}
-        spacing={1}
-        p={1}
-        position="sticky"
-        top={0}
-      >
-        <Item elevation={0} sx={{ flexGrow: 1 }}>
-          <Stack direction="row" spacing={1} flexGrow={1} height="100%">
-            <ElevationScroll elevation={2}>
-              <Item sx={{ flexGrow: 1 }}>
-                <Search>
-                  <SearchIconWrapper>
-                    <SearchIcon />
-                  </SearchIconWrapper>
-                  <StyledInputBase
-                    placeholder="Search…"
-                    inputProps={{ "aria-label": "search" }}
-                  />
-                </Search>
-              </Item>
-            </ElevationScroll>
-            <ElevationScroll elevation={2}>
-              <Item sx={{ display: { xs: "flex", md: "none" } }}>
-                <IconButton
-                  aria-label="search filters"
-                  id="mobile-filter-button"
-                  onClick={handleFilterButtonClick}
-                >
-                  <TuneIcon
-                    color={openFilterMenu ? "primary" : "inherit"}
-                    sx={{
-                      transform: "rotate(-90deg)",
-                    }}
-                  />
-                </IconButton>
-                <Menu
-                  id="mobile-filter-menu"
-                  aria-labelledby="mobile-filter-button"
-                  anchorEl={anchorFilterMenu}
-                  open={openFilterMenu}
-                  onClose={handleFilterMenuClose}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  PaperProps={{
-                    sx: {
-                      mt: 1,
-                      boxShadow: "none",
-                      backgroundColor: "transparent",
-                    },
-                  }}
-                >
-                  {filterSwitchers}
-                </Menu>
-              </Item>
-            </ElevationScroll>
+      <Box position="sticky" top={-1} zIndex={1099}>
+        <ElevationScroll canElevate={!isMobileScreen} useShadow>
+          <Stack
+            direction={{ xs: "column", md: "row" }}
+            spacing={1}
+            p={1}
+            sx={{
+              backgroundColor: { xs: "transparent", md: "white" },
+            }}
+          >
+            <Item
+              elevation={0}
+              sx={{ flexGrow: 1, backgroundColor: "transparent" }}
+            >
+              <Stack direction="row" spacing={1} flexGrow={1} height="100%">
+                <ElevationScroll elevation={2} canElevate={isMobileScreen}>
+                  <Item sx={{ flexGrow: 1 }}>
+                    <Search>
+                      <SearchIconWrapper>
+                        <SearchIcon />
+                      </SearchIconWrapper>
+                      <StyledInputBase
+                        placeholder="Search…"
+                        inputProps={{ "aria-label": "search" }}
+                      />
+                    </Search>
+                  </Item>
+                </ElevationScroll>
+                <ElevationScroll elevation={2}>
+                  <Item sx={{ display: { xs: "flex", md: "none" } }}>
+                    <IconButton
+                      aria-label="search filters"
+                      id="mobile-filter-button"
+                      onClick={handleFilterButtonClick}
+                    >
+                      <TuneIcon
+                        color={openFilterMenu ? "primary" : "inherit"}
+                        sx={{
+                          transform: "rotate(-90deg)",
+                        }}
+                      />
+                    </IconButton>
+                    <Menu
+                      id="mobile-filter-menu"
+                      aria-labelledby="mobile-filter-button"
+                      anchorEl={anchorFilterMenu}
+                      open={openFilterMenu}
+                      onClose={handleFilterMenuClose}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "right",
+                      }}
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      PaperProps={{
+                        sx: {
+                          mt: 1,
+                          boxShadow: "none",
+                          backgroundColor: "transparent",
+                        },
+                      }}
+                    >
+                      {filterSwitchers}
+                    </Menu>
+                  </Item>
+                </ElevationScroll>
+              </Stack>
+            </Item>
+            <Item
+              elevation={0}
+              sx={{
+                justifyContent: "flex-end",
+                display: { xs: "none", md: "flex" },
+                backgroundColor: "transparent",
+              }}
+            >
+              {filterSwitchers}
+            </Item>
           </Stack>
-        </Item>
-        <Item
-          elevation={0}
-          sx={{
-            justifyContent: "flex-end",
-            display: { xs: "none", md: "flex" },
-          }}
-        >
-          {filterSwitchers}
-        </Item>
-      </Stack>
+        </ElevationScroll>
+      </Box>
     </HideOnScroll>
   );
 };
