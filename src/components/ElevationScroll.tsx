@@ -28,7 +28,7 @@ function ElevationScroll(props: Props) {
       style: {
         filter:
           canElevate && trigger
-            ? "drop-shadow(0px 4px 8px rgba(0,0,0,0.2))"
+            ? "drop-shadow(0px 4px 8px rgba(0,0,0,0.25))"
             : "drop-shadow(0px 0px 0px rgba(0,0,0,0.0))",
         transition: "filter 0.3s ease",
       },

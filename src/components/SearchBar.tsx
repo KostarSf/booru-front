@@ -116,13 +116,13 @@ const SearchBar = (props: Props) => {
   return (
     <HideOnScroll canHide={isMobileScreen}>
       <Box position="sticky" top={-1} zIndex={1099}>
-        <ElevationScroll canElevate={!isMobileScreen} useShadow>
+        <ElevationScroll useShadow>
           <Stack
             direction={{ xs: "column", md: "row" }}
             spacing={1}
             p={1}
             sx={{
-              backgroundColor: { xs: "transparent", md: "white" },
+              backgroundColor: "white",
             }}
           >
             <Item
@@ -130,59 +130,58 @@ const SearchBar = (props: Props) => {
               sx={{ flexGrow: 1, backgroundColor: "transparent" }}
             >
               <Stack direction="row" spacing={1} flexGrow={1} height="100%">
-                <ElevationScroll elevation={2} canElevate={isMobileScreen}>
-                  <Item sx={{ flexGrow: 1 }}>
-                    <Search>
-                      <SearchIconWrapper>
-                        <SearchIcon />
-                      </SearchIconWrapper>
-                      <StyledInputBase
-                        placeholder="Search…"
-                        inputProps={{ "aria-label": "search" }}
-                      />
-                    </Search>
-                  </Item>
-                </ElevationScroll>
-                <ElevationScroll elevation={2}>
-                  <Item sx={{ display: { xs: "flex", md: "none" } }}>
-                    <IconButton
-                      aria-label="search filters"
-                      id="mobile-filter-button"
-                      onClick={handleFilterButtonClick}
-                    >
-                      <TuneIcon
-                        color={openFilterMenu ? "primary" : "inherit"}
-                        sx={{
-                          transform: "rotate(-90deg)",
-                        }}
-                      />
-                    </IconButton>
-                    <Menu
-                      id="mobile-filter-menu"
-                      aria-labelledby="mobile-filter-button"
-                      anchorEl={anchorFilterMenu}
-                      open={openFilterMenu}
-                      onClose={handleFilterMenuClose}
-                      anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "right",
+                <Item sx={{ flexGrow: 1 }} elevation={0}>
+                  <Search>
+                    <SearchIconWrapper>
+                      <SearchIcon />
+                    </SearchIconWrapper>
+                    <StyledInputBase
+                      placeholder="Search…"
+                      inputProps={{ "aria-label": "search" }}
+                    />
+                  </Search>
+                </Item>
+                <Item
+                  sx={{ display: { xs: "flex", md: "none" } }}
+                  elevation={0}
+                >
+                  <IconButton
+                    aria-label="search filters"
+                    id="mobile-filter-button"
+                    onClick={handleFilterButtonClick}
+                  >
+                    <TuneIcon
+                      color={openFilterMenu ? "primary" : "inherit"}
+                      sx={{
+                        transform: "rotate(-90deg)",
                       }}
-                      transformOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                      }}
-                      PaperProps={{
-                        sx: {
-                          mt: 1,
-                          boxShadow: "none",
-                          backgroundColor: "transparent",
-                        },
-                      }}
-                    >
-                      {filterSwitchers}
-                    </Menu>
-                  </Item>
-                </ElevationScroll>
+                    />
+                  </IconButton>
+                  <Menu
+                    id="mobile-filter-menu"
+                    aria-labelledby="mobile-filter-button"
+                    anchorEl={anchorFilterMenu}
+                    open={openFilterMenu}
+                    onClose={handleFilterMenuClose}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "right",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    PaperProps={{
+                      sx: {
+                        mt: 1,
+                        boxShadow: "none",
+                        backgroundColor: "transparent",
+                      },
+                    }}
+                  >
+                    {filterSwitchers}
+                  </Menu>
+                </Item>
               </Stack>
             </Item>
             <Item
