@@ -11,6 +11,12 @@ import { ImageDto } from "../API/Types";
 import ImageTile from "./ImageTile";
 import PageLoader from "./UI/PageLoader";
 
+type SearchParams = {
+  q: string;
+  sf: string;
+  sd: string;
+};
+
 type Props = {
   sx?: SxProps<Theme> | undefined;
   searchParams: URLSearchParams;
@@ -23,15 +29,8 @@ const ImagesFeed = (props: Props) => {
     null
   );
 
-  const searchParams = React.useMemo(() => {
-    console.log('Changing params');
-
-    setImagesQuery(null);
-    return createNewSearchParams(urlSearchParams);
-  }, [urlSearchParams]);
-
   const [fetchImagePage, isImagePageLoading] = useFetching(
-    async (page: number) => {
+    async (page: number, searchParams: SearchParams) => {
       const pageLimit = 50;
 
       const getResponse = async (page: number) => {
@@ -40,20 +39,28 @@ const ImagesFeed = (props: Props) => {
           page,
           ...searchParams,
         });
-      }
+      };
 
-      if (imagesQuery === null) {
-        console.log('Fetching: Null worker...');
+      const queryString = JSON.stringify(searchParams);
+
+      console.log("Fetching: queryString: " + queryString);
+
+      if (imagesQuery === null || imagesQuery.queryString !== queryString) {
+        console.log("Fetching: Null worker...");
+        setImagesQuery(null);
 
         const response = await getResponse(1);
         const totalCount = response.data.total;
         setImagesQuery({
-          pages: [{
-            page: 1,
-            images: filterHiddenImages(response.data.images),
-          }],
+          pages: [
+            {
+              page: 1,
+              images: filterHiddenImages(response.data.images),
+            },
+          ],
           lastLoadedPage: 1,
           totalPages: getPageCount(totalCount, pageLimit),
+          queryString: queryString,
         });
         return;
       }
@@ -66,22 +73,29 @@ const ImagesFeed = (props: Props) => {
         return;
       }
 
+      console.log("Fetching: Next page worker " + page);
+
       const newImagesQuery: ImagesQuery = {
         ...imagesQuery,
-        pages: [...imagesQuery.pages].sort(
-          (a, b) => a.page - b.page
-        ),
+        pages: [...imagesQuery.pages].sort((a, b) => a.page - b.page),
       };
       const response = await getResponse(page);
       newImagesQuery.lastLoadedPage = page;
       newImagesQuery.pages.push({
         page,
-        images: filterHiddenImages(response.data.images)
+        images: filterHiddenImages(response.data.images),
       });
 
       setImagesQuery(newImagesQuery);
     }
   );
+
+  const searchParams = React.useMemo(() => {
+    const newSearchParams = createNewSearchParams(urlSearchParams);
+    console.log("useMemo: queryString: " + JSON.stringify(newSearchParams));
+    fetchImagePage(1, newSearchParams);
+    return newSearchParams;
+  }, [urlSearchParams]);
 
   const loadTriggerRef = React.useRef(null);
 
@@ -91,8 +105,8 @@ const ImagesFeed = (props: Props) => {
     isImagePageLoading,
     () => {
       const fetchingPage = getNextUnloadedPage(imagesQuery);
-      console.log(`Fetch image page ${fetchingPage}...`);
-      fetchImagePage(fetchingPage);
+      console.log(`Observer: Fetch image page ${fetchingPage}...`);
+      fetchImagePage(fetchingPage, searchParams);
     }
   );
 
@@ -130,7 +144,7 @@ function createNewSearchParams(urlSearchParams: URLSearchParams) {
     sort: urlSearchParams.get("sf") || "",
     order: urlSearchParams.get("sd") || "",
   };
-  const newSearchParams = {
+  const newSearchParams: SearchParams = {
     q: params.query.length ? params.query : "first_seen_at.gt:5 days ago",
     sf: params.sort.length ? params.sort : "first_seen_at",
     sd: params.order.length ? params.order : "desc",

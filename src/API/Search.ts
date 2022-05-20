@@ -14,11 +14,11 @@ export function createSearchParams(data: SearchData) {
   };
 }
 
-export function getSearchParams(params: URLSearchParams) {
+export function getSearchParams(params: URLSearchParams): SearchData {
   return {
-    q: params.get("q"),
-    sf: params.get("sf"),
-    sd: params.get("sd"),
+    query: params.get("q") || BlankSearchData.query,
+    sort: params.get("sf") || BlankSearchData.sort,
+    order: params.get("sd") || BlankSearchData.order,
   };
 }
 
@@ -36,6 +36,7 @@ export type ImagesPage = {
 
 export type ImagesQuery = {
   pages: ImagesPage[];
+  queryString: string;
   lastLoadedPage: number;
   totalPages: number;
 };
