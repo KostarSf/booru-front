@@ -1,13 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Chip, Paper, Typography, Box } from "@mui/material";
-import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
-import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
-import StarRoundedIcon from "@mui/icons-material/StarRounded";
-import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import { ImageDto, ImageRepresentations } from "../API/Types";
 import useOnScreen from "../hooks/useOnScreen";
 import ImageTileView from "./ImageTileView";
-import { green, pink } from "@mui/material/colors";
 
 type ImageProps = {
   image: ImageDto
