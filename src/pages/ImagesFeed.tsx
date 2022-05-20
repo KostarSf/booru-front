@@ -113,11 +113,9 @@ const Images: React.FC = () => {
   };
 
   return (
-    <>
-      <Box sx={{ py: { xs: 0.5, md: 1 } }}></Box>
+    <Box sx={{ pt: { xs: 1, md: 2 } }}>
       <SearchBar />
-      <Box sx={{ py: { xs: 0.5, md: 1 } }}></Box>
-      <Box sx={{ ml: 1 }}>
+      <Box sx={{ ml: 1, pt: { xs: 1, md: 2 } }}>
         {imagePages.map((ip, index, array) => (
           <div key={ip.page} id={`tile-page-${ip.page}`}>
             {ip.page > 1 && (
