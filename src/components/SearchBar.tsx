@@ -151,6 +151,7 @@ const SearchBar = (props: Props) => {
                       inputProps={{ "aria-label": "search" }}
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                     />
                   </Search>
                 </Item>
