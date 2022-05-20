@@ -25,6 +25,12 @@ const Images: React.FC = () => {
   const [page, setPage] = useState(1);
   const lastElement = useRef(null);
 
+  const [zoom, setZoom] = useState(0);
+
+  useEffect(() => {
+    window.dispatchEvent(new Event("resize"));
+  }, [zoom])
+
   const [fetchImages, isImagesLoading, imageError] = useFetching(async (limit: number, page: number) => {
     const response = await ImageService.getAll({per_page: limit, page, q: filter.query, sf: filter.sort});
     setImagePages([...imagePages, { page, images: response.data.images }])
@@ -50,6 +56,11 @@ const Images: React.FC = () => {
     setFilter({...filter, query: searchFieldValue});
   }
 
+  const applyZoom = (initial: number) => {
+    const resultZoom = initial + zoom;
+    return resultZoom < 1 ? 1 : resultZoom;
+  }
+
   return (
     <>
       <Box sx={{ py: { xs: 0.5, md: 1 } }}></Box>
@@ -63,7 +74,13 @@ const Images: React.FC = () => {
               </Divider>
             )}
             <Masonry
-              columns={{ xs: 1, sm: 2, md: 3, lg: 4, xl: 5 }}
+              columns={{
+                xs: applyZoom(1),
+                sm: applyZoom(2),
+                md: applyZoom(3),
+                lg: applyZoom(4),
+                xl: applyZoom(5),
+              }}
               spacing={1}
               key={ip.page}
             >
