@@ -10,16 +10,14 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
-import { SortTypes, OrderTypes, getSortTypeIndex, getOrderTypeIndex } from "../API/Types";
+import { SortTypes, OrderTypes, getSortTypeIndex, getOrderTypeIndex, SortItem } from "../API/Types";
 import ChooseMenu from "./ChooseMenu";
 import Menu from "@mui/material/Menu";
 import HideOnScroll from "./HideOnScroll";
 import ElevationScroll from "./ElevationScroll";
 import { Box } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
-import { createSearchParams, getSearchParams } from "../API/Search";
-
-type Props = {};
+import { createSearchParams, getSearchParams, SearchData } from "../API/Search";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -52,10 +50,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+type Props = {
+  value: SearchData;
+  onChange: (value: SearchData) => void;
+  onSubmit: () => void;
+};
+
 const SearchBar = (props: Props) => {
-  const [searchValue, setSearchValue] = React.useState('');
-  const [selectedSortIndex, setSelectedSortIndex] = React.useState(0);
-  const [selectedOrderIndex, setSelectedOrderIndex] = React.useState(0);
+  const {value, onChange, onSubmit} = props;
+
+  const selectedSortIndex = getSortTypeIndex(value.sort);
+  const selectedOrderIndex = getOrderTypeIndex(value.order);
 
   const [anchorFilterMenu, setAnchorFilterMenu] =
     React.useState<null | HTMLElement>(null);
@@ -70,29 +75,8 @@ const SearchBar = (props: Props) => {
   const theme = useTheme();
   const isMobileScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  let [searchParams, setSearchParams] = useSearchParams();
-
-  React.useEffect(() => {
-    const params = getSearchParams(searchParams);
-    if (params.q) {
-      setSearchValue(params.q === "(safe || !safe)" ? "" : params.q);
-    };
-    if (params.sf) {
-      setSelectedSortIndex(getSortTypeIndex(params.sf));
-    }
-    if (params.sd) {
-      setSelectedOrderIndex(getOrderTypeIndex(params.sd));
-    }
-  }, [searchParams]);
-
   const handleSearch = () => {
-    setSearchParams(
-      createSearchParams(
-        searchValue,
-        SortTypes[selectedSortIndex].value,
-        OrderTypes[selectedOrderIndex].value
-      )
-    );
+    onSubmit();
   }
 
   React.useEffect(() => {
@@ -109,7 +93,12 @@ const SearchBar = (props: Props) => {
           menuId="sort-filter"
           value={SortTypes}
           selectedIndex={selectedSortIndex}
-          onSelect={(item, index) => setSelectedSortIndex(index)}
+          onSelect={(item) =>
+            onChange({
+              ...value,
+              sort: item.value,
+            })
+          }
         />
       </Item>
       <Item elevation={isMobileScreen ? 2 : 0}>
@@ -118,7 +107,12 @@ const SearchBar = (props: Props) => {
           menuId="order-filter"
           value={OrderTypes}
           selectedIndex={selectedOrderIndex}
-          onSelect={(item, index) => setSelectedOrderIndex(index)}
+          onSelect={(item) =>
+            onChange({
+              ...value,
+              order: item.value,
+            })
+          }
         />
       </Item>
     </Stack>
@@ -147,10 +141,14 @@ const SearchBar = (props: Props) => {
                   </IconButton>
                   <Search>
                     <StyledInputBase
+                      // type='search'
                       placeholder="Search…"
                       inputProps={{ "aria-label": "search" }}
-                      value={searchValue}
-                      onChange={(e) => setSearchValue(e.target.value)}
+                      value={value.query}
+                      onChange={(e) => onChange({
+                        ...value,
+                        query: e.target.value
+                      })}
                       onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                     />
                   </Search>

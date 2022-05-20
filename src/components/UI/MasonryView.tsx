@@ -17,6 +17,7 @@ const MasonryView = (props: PropsWithChildren<Props>) => {
 
   return (
     <Masonry
+      sx={{pl: 1}}
       columns={
         fixedZoom
           ? { xs: applyZoom(1) }

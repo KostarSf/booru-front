@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import ImagesFeed from "../pages/ImagesFeed";
+import ImagesFeed from "../pages/ImagesFeedPage";
 import ImagesPages from "../pages/ImagesPages";
 
 const AppRouter = () => {
