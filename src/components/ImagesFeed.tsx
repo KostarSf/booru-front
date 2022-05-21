@@ -10,7 +10,6 @@ import TileImagesPage from "./UI/TileImagesPage";
 import { ImageDto } from "../API/Types";
 import ImageTile from "./ImageTile";
 import PageLoader from "./UI/PageLoader";
-import PageDivider from "./UI/PageDivider";
 import Divider from "@mui/material/Divider";
 import BottomLoader from "./UI/BottomLoader";
 
@@ -46,10 +45,7 @@ const ImagesFeed = (props: Props) => {
 
       const queryString = JSON.stringify(searchParams);
 
-      console.log("Fetching: queryString: " + queryString);
-
       if (imagesQuery === null || imagesQuery.queryString !== queryString) {
-        console.log("Fetching: Null worker...");
         setImagesQuery(null);
 
         const response = await getResponse(1);
@@ -70,20 +66,12 @@ const ImagesFeed = (props: Props) => {
       }
 
       if (page !== imagesQuery.lastLoadedPage + 1) {
-        console.log(
-          `Fetching: Wrong order (${page} instead of ${
-            imagesQuery.lastLoadedPage + 1
-          }). Abort`
-        );
         return;
       }
 
       if (page > imagesQuery.totalPages) {
-        console.log("Fetching: All pages is loaded. Nothig done");
         return;
       }
-
-      console.log("Fetching: Next page worker " + page);
 
       const newImagesQuery: ImagesQuery = {
         ...imagesQuery,
@@ -102,7 +90,6 @@ const ImagesFeed = (props: Props) => {
 
   const searchParams = React.useMemo(() => {
     const newSearchParams = createNewSearchParams(urlSearchParams);
-    console.log("useMemo: queryString: " + JSON.stringify(newSearchParams));
     fetchImagePage(1, newSearchParams);
     return newSearchParams;
   }, [urlSearchParams]);
@@ -120,12 +107,10 @@ const ImagesFeed = (props: Props) => {
     const lastPageOfQuery = page >= imagesQuery.totalPages;
 
     if (lastPageOfQuery) {
-      console.log(`This is the last page of query`);
       return;
     }
 
     if (lastLoadedPage) {
-      console.log(`Last loaded page on screen. Load next...`);
       fetchImagePage(page + 1, searchParams);
     }
   }

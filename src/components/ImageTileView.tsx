@@ -57,11 +57,11 @@ function ImageTileView({
           display: "block",
           width: "100%",
           borderRadius: "5px",
-          filter: (!sourceLoaded && unloadBlur) ? "blur(5px)" : "blur(0)",
+          filter: !sourceLoaded && unloadBlur ? "blur(5px)" : "blur(0)",
           // transition: "filter 0.3s ease",
         }}
       />
-      {(!sourceLoaded && loadSource) && (
+      {!sourceLoaded && loadSource && (
         <Skeleton
           variant="rectangular"
           width="100%"
