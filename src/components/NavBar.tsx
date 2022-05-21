@@ -45,7 +45,7 @@ const NavBar: React.FC = () => {
               textDecoration: "none",
             }}
           >
-            BOORU VIEW
+            DerpiView
           </Typography>
           <Box sx={{ flexGrow: 1, display: "flex" }}>
             <Button
