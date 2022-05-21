@@ -25,6 +25,7 @@ type Props = {
   searchParams: URLSearchParams;
 };
 
+// TODO Вернуть на место сообщение об обрыве сети
 const ImagesFeed = (props: Props) => {
   const { sx, searchParams: urlSearchParams } = props;
 
