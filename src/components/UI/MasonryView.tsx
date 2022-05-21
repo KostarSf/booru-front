@@ -8,7 +8,7 @@ type Props = {
 }
 
 const MasonryView = (props: PropsWithChildren<Props>) => {
-  const { zoom = 0, fixedZoom = false, spacing = 1, children } = props;
+  const { zoom = 1, fixedZoom = false, spacing = 1, children } = props;
 
   const applyZoom = (initial: number) => {
     const newZoom = initial + zoom;

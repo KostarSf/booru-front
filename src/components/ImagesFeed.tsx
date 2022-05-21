@@ -122,8 +122,8 @@ const ImagesFeed = (props: Props) => {
         {imagesQuery && (
           <Divider textAlign="left" sx={{ mb: 2 }}>
             <Typograpy variant="overline" fontWeight={500}>
-              Found {imagesQuery.totalCount} results on {imagesQuery.totalPages}{" "}
-              pages
+              Found {imagesQuery.totalCount} results
+              {/* {" "}on {imagesQuery.totalPages} pages */}
             </Typograpy>
           </Divider>
         )}
@@ -134,6 +134,7 @@ const ImagesFeed = (props: Props) => {
                 total={imagesQuery.totalPages}
                 page={page.page}
                 onScreen={handlePageOnSceen}
+                showDividers={false}
               >
                 {page.images.map((image) => (
                   <ImageTile image={image} key={image.id} />

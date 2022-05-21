@@ -26,7 +26,7 @@ const ImageTile: React.FC<ImageProps> = ({image}) => {
   const divRef = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(divRef);
   const [loaded, setLoaded] = useState(false);
-  const [canShowTileView, setCanShowTileView] = useState(false);
+  const [canShowTileView, setCanShowTileView] = useState(true);
   const [hqThumbLoaded, setHqThumbLoaded] = useState(false);
 
   const [spoilered, setSpoilered] = useState(image.spoilered);
@@ -150,7 +150,7 @@ const ImageTile: React.FC<ImageProps> = ({image}) => {
             userSelect: "none",
           }}
         >
-          <Typography variant="overline" fontSize={26} component="div">
+          <Typography variant="overline" fontSize={26} fontWeight={300} color='#777'>
             HIDDEN
           </Typography>
         </Box>
