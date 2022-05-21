@@ -94,14 +94,20 @@ const ImagesFeed = (props: Props) => {
     return newSearchParams;
   }, [urlSearchParams]);
 
+  // TODO Выгрузка далекой ленты из вьюпорта. На данный момент лагает. Ложные срабатывания триггера скролла, при быстром скролле не успевает подгружаться
+  // const [pageOnScreen, setPageOnScreen] = React.useState(1);
+  // const drawingPages = React.useMemo(() => {
+  //   if (imagesQuery === null) return [];
+  //   const offset = 3;
+  //   return imagesQuery.pages.filter(
+  //     (page) =>
+  //       page.page >= pageOnScreen - offset && page.page <= pageOnScreen + offset
+  //   );
+  // }, [imagesQuery, pageOnScreen]);
+
   const handlePageOnSceen = (page: number) => {
     if (imagesQuery === null) return;
-
-    console.log(
-      `Page on screen: ${page}\n` +
-        `Last lodaded page: ${imagesQuery.lastLoadedPage}\n` +
-        `Pages total: ${imagesQuery.totalPages}`
-    );
+    // setPageOnScreen(page);
 
     const lastLoadedPage = page === imagesQuery.lastLoadedPage;
     const lastPageOfQuery = page >= imagesQuery.totalPages;
