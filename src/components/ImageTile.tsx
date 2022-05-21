@@ -18,9 +18,13 @@ const ImageTile: React.FC<ImageProps> = ({image}) => {
 
   const [spoilered, setSpoilered] = useState(image.spoilered);
 
+  const cuttedRatio = image.aspect_ratio < 0.4 ? 0.4 : image.aspect_ratio;
+  const imageCutted = cuttedRatio !== image.aspect_ratio;
+  const showRatio = false;
+
   const handleResizeTiles = () => {
     const height =
-      (divRef.current ? divRef.current.offsetWidth : 0) / image.aspect_ratio;
+      (divRef.current ? divRef.current.offsetWidth : 0) / cuttedRatio;
     setContentHeight(height);
   }
 
@@ -64,6 +68,37 @@ const ImageTile: React.FC<ImageProps> = ({image}) => {
           onSourceLoad={() => setHqThumbLoaded(true)}
           unloadBlur={!spoilered}
           loadSource={!spoilered}
+        />
+      )}
+      {imageCutted && image.aspect_ratio <= 0.35 && (
+        <Box
+          style={{
+            position: "absolute",
+            inset: 0,
+            borderRadius: "5px",
+            pointerEvents: "none",
+            background:
+              "linear-gradient(0deg, rgba(255,255,255,1) 5%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 100%)",
+          }}
+        />
+      )}
+      {showRatio && (
+        <Chip
+          label={
+            imageCutted
+              ? `${cuttedRatio.toFixed(2)} (${image.aspect_ratio.toFixed(2)})`
+              : `${cuttedRatio.toFixed(2)}`
+          }
+          size="small"
+          style={{
+            position: "absolute",
+            top: "0",
+            left: "0",
+            color: "white",
+            backgroundColor: "#0006",
+            borderRadius: "5px",
+            margin: "5px",
+          }}
         />
       )}
       {image.format === "webm" && (
