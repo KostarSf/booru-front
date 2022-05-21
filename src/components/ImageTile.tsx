@@ -62,12 +62,11 @@ const ImageTile: React.FC<ImageProps> = ({image}) => {
 
   const viewCard = (
     <div
-      onClick={() => console.log(image)}
-      ref={divRef}
+      // ref={divRef}
       style={{
         height: contentHeight + "px",
         borderRadius: "5px",
-        overflow: "hidden",
+        // overflow: "hidden",
         position: "relative",
       }}
     >
@@ -129,6 +128,16 @@ const ImageTile: React.FC<ImageProps> = ({image}) => {
           }}
         />
       )}
+      <div
+        ref={divRef}
+        style={{
+          position: "absolute",
+          inset: 0,
+          margin: "-60vh 0",
+          pointerEvents: 'none',
+          // backgroundColor: "#f003",
+        }}
+      ></div>
     </div>
   );
 
